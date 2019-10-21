@@ -1,6 +1,24 @@
 from rest_framework import serializers
+from django.contrib.auth.models import User
 
 from .models import Flight, Booking
+
+class UserCreateSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = User
+		fields = ['username', 'password', 'first_name', 'last_name']
+
+	def create(self, validated_data):
+		username_from_user = validated_data.get('username')
+		password_from_user = validated_data.get('password')
+		namef_from_user = validated_data.get('first_name')
+		namel_from_user = validated_data.get('last_name')
+
+		new_user = User(username=username_from_user, first_name=namef_from_user, last_name=namel_from_user)
+		new_user.set_password(password_from_user)
+		# new_user.is_staff = True
+		new_user.save()
+		return validated_data
 
 
 class FlightSerializer(serializers.ModelSerializer):
